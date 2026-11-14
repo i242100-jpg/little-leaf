@@ -7,6 +7,7 @@ import PlantDetails from './pages/PlantDetails';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Confirmation from './pages/Confirmation';
+import PlantMatch from './pages/PlantMatch';
 import { validateQuantity } from './utils/businessRules';
 import { loadPlants } from './utils/mockLoader';
 import './App.css';
@@ -64,6 +65,7 @@ export default function App() {
     <Navbar count={cart.reduce((sum, item) => sum + item.quantity, 0)} />
     <Routes>
       <Route path="/" element={<Home plants={plants} onAdd={addItem} />} />
+      <Route path="/match" element={<PlantMatch plants={plants} onAdd={addItem} />} />
       <Route path="/shop" element={<Shop plants={plants} onAdd={addItem} loading={loading} error={error} retry={retry} failDemo={failDemo} setFailDemo={setFailDemo} emptyDemo={emptyDemo} setEmptyDemo={setEmptyDemo}/>} />
       <Route path="/plants/:id" element={<PlantDetails plants={plants} onAdd={addItem} loading={loading} error={error} retry={retry}/>} />
       <Route path="/cart" element={<Cart cart={cart} plants={plants} updateItem={updateItem} setPot={setPot} message={cartMessage}/>} />

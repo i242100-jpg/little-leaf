@@ -21,6 +21,7 @@ export default function Home({ plants, onAdd }) {
       <div className="section-heading"><div><span className="eyebrow">HANDPICKED FOR YOU</span><h2 id="favorites-title">Little green favorites</h2></div><Link className="text-link" to="/shop">Shop all plants ↗</Link></div>
       <div className="product-grid">{plants.slice(0, 4).map(plant => <PlantCard key={plant.id} plant={plant} onAdd={onAdd}/>)}</div>
     </section>
+    <section className="match-teaser"><div className="teaser-emblem" aria-hidden="true">✿</div><div><span className="eyebrow">A LITTLE BOTANICAL MAGIC</span><h2>Every plant has a person.<br/><em>Find yours.</em></h2><p>A tiny quiz for your light, space, and plant-parent personality.</p></div><Link className="primary-button" to="/match">Take the plant match quiz ↗</Link></section>
     <section className="story-banner"><div><span className="eyebrow">ROOTED IN SOMETHING GOOD</span><h2>Find the right plant,<br/><em>not just any plant.</em></h2><p>Search by sunlight, care level, size, or budget. Every little leaf deserves the right home.</p><Link className="primary-button" to="/shop">Find your match ↗</Link></div><div className="story-flower" aria-hidden="true">✿</div></section>
   </>;
 }

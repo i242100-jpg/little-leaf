@@ -8,6 +8,7 @@ export default function Navbar({ count = 0 }) {
       <nav aria-label="Main navigation">
         <NavLink end to="/">Home</NavLink>
         <NavLink to="/shop">Shop plants</NavLink>
+        <NavLink to="/match">Plant match ✿</NavLink>
       </nav>
       <Link className="bag-link" to="/cart" aria-label={`Shopping basket, ${count} plants`}>Basket ({count}) <span aria-hidden="true">↗</span></Link>
     </header>
