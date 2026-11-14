@@ -82,11 +82,9 @@
 @media(max-width:800px){.match-teaser{flex-direction:column;text-align:center}.match-options{grid-template-columns:repeat(2,minmax(0,1fr))}.match-result-grid{grid-template-columns:1fr}.confirmation-sparkles{display:none}}
 @media(max-width:480px){.match-form,.match-results{padding:22px 16px}.match-option{min-height:67px;font-size:11px}.match-question legend{font-size:14px}.match-hero{padding:55px 18px 65px}.basket-item{grid-template-columns:90px minmax(0,1fr);gap:12px;padding:13px}.basket-image{width:90px;height:122px}.basket-item h2{font-size:22px}.basket-item select{font-size:12px}.match-result-card{grid-template-columns:1fr}.match-card-flower{width:100%;height:75px}}
 
-.match-more{display:block;margin:24px auto 0;padding:14px 25px;font-size:14px;cursor:pointer;background:#fff5f8;border:1px solid #b8849c}.match-more:hover{background:#f3dce7}
-.match-plant-image {
-  width: 112px;
-  height: 132px;
-  object-fit: cover;
-  border-radius: 18px;
-  flex-shrink: 0;
-}
+/* Simulated stock and gentle checkout disclosure */
+.inventory-reset-button { display: inline-flex; justify-content: center; width: 100%; margin-top: 12px; padding: 11px 14px; border: 1px solid #839958; border-radius: 18px; background: #e7f4d5; color: #0a3323; cursor: pointer; font: inherit; font-weight: 700; }
+.inventory-reset-button:hover, .inventory-reset-button:focus-visible { background: #dcebc6; }
+.inventory-availability-note { color: #546d48; font-size: .9rem; margin: 12px 0 0; }
+.simulation-note { display: flex; align-items: center; gap: 8px; font-size: .85rem; line-height: 1.5; color: #62775f; background: #f3f5e9; padding: 10px 14px; border-radius: 14px; margin: 14px 0; max-width: 100%; }
+.simulation-note span { color: #d3968c; }

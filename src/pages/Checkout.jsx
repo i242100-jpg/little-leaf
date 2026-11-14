@@ -34,7 +34,7 @@ export default function Checkout({ cart, plants, onComplete }) {
     <label htmlFor="address">Delivery address</label><textarea id="address" rows="4" value={form.address} onChange={e => update('address', e.target.value)} aria-invalid={!!errors.address}/>{errors.address && <p className="inline-error">{errors.address}</p>}
     <label className="checkbox-row"><input type="checkbox" checked={form.hasPets} onChange={e => update('hasPets', e.target.checked)}/> I have pets at home (check plant suitability)</label>
     {!petRule.ok && <p className="inline-error" role="alert">{petRule.message}</p>}{errors.stock && <p className="inline-error" role="alert">{errors.stock}</p>}
-    <p className="order-note">Demo checkout: no real order is placed. Do not enter real contact details.</p>
+    <p className="simulation-note"><span aria-hidden="true">✿</span> A little practice order — no real payment or delivery. Please use fictional details.</p>
     <button className="primary-button" type="submit">Confirm simulated order ↗</button>
   </form><aside className="order-panel"><h2>Review your order</h2>{cart.map(item => {const p = plants.find(plant => plant.id === item.id); return p && <p key={item.id}>{p.name} × {item.quantity}<strong>{formatPrice((p.price + (item.pot === 'ceramic' ? 350 : 0)) * item.quantity)}</strong></p>;})}
     <hr/><p>Subtotal <strong>{formatPrice(summary.subtotal)}</strong></p><p>Delivery ({form.city}) <strong>{formatPrice(summary.delivery)}</strong></p><p className="order-total">Total <strong>{formatPrice(summary.total)}</strong></p>

@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { categories } from '../data/plants';
 import PlantCard from '../components/PlantCard';
 
-export default function Shop({ plants, loading, error, retry, emptyDemo, setEmptyDemo, failDemo, setFailDemo, onAdd }) {
+export default function Shop({ plants, loading, error, retry, emptyDemo, setEmptyDemo, failDemo, setFailDemo, onAdd, availabilityDemo, setAvailabilityDemo, resetInventory }) {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All plants');
   const [light, setLight] = useState('Any light');
@@ -36,7 +36,7 @@ export default function Shop({ plants, loading, error, retry, emptyDemo, setEmpt
         <label htmlFor="care">Care difficulty</label><select id="care" value={care} onChange={e => setCare(e.target.value)}>{['Any care', 'Easy', 'Moderate', 'Advanced'].map(item => <option key={item}>{item}</option>)}</select>
         <label htmlFor="size">Plant size</label><select id="size" value={size} onChange={e => setSize(e.target.value)}>{['Any size', 'Small', 'Medium', 'Large'].map(item => <option key={item}>{item}</option>)}</select>
         <label htmlFor="maxPrice">Maximum price (Rs.)</label><input id="maxPrice" type="number" inputMode="numeric" min="0" step="100" placeholder="Any price" value={maxPrice} onChange={e => setMaxPrice(e.target.value)}/>
-        <details className="demo-tools"><summary>Demo: loading and availability states</summary><label className="checkbox-label"><input type="checkbox" checked={failDemo} onChange={e => setFailDemo(e.target.checked)} /> Simulate loading failure</label><label className="checkbox-label"><input type="checkbox" checked={emptyDemo} onChange={e => setEmptyDemo(e.target.checked)} /> Simulate empty catalogue</label></details>
+        <details className="demo-tools"><summary>Demo: loading and availability states</summary><label className="checkbox-label"><input type="checkbox" checked={failDemo} onChange={e => setFailDemo(e.target.checked)} /> Simulate loading failure</label><label className="checkbox-label"><input type="checkbox" checked={emptyDemo} onChange={e => setEmptyDemo(e.target.checked)} /> Simulate empty catalogue</label><label className="checkbox-label"><input type="checkbox" checked={availabilityDemo} onChange={e => setAvailabilityDemo(e.target.checked)}/> Simulate changed availability (first basket item)</label><button type="button" className="inventory-reset-button" onClick={resetInventory}>Reset demo inventory ↻</button><p className="order-note">Restores the original quantities after simulated orders.</p></details>
       </aside>
       <div>
         <div className="results-bar"><span aria-live="polite">{loading ? 'Finding plants…' : error ? 'Could not load plants' : `${matches.length} happy little ${matches.length === 1 ? 'plant' : 'plants'}`}</span><label className="sort-label" htmlFor="sort">Sort by <select id="sort" value={sort} onChange={e => setSort(e.target.value)}><option value="featured">Featured</option><option value="price-asc">Price: low to high</option><option value="price-desc">Price: high to low</option><option value="name">Name: A to Z</option></select></label></div>

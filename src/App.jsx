@@ -10,6 +10,7 @@ import Confirmation from './pages/Confirmation';
 import PlantMatch from './pages/PlantMatch';
 import { validateQuantity } from './utils/businessRules';
 import { loadPlants } from './utils/mockLoader';
+import { applyStockChanges, recordPurchase, readSavedInventory } from './utils/inventory';
 import './App.css';
 
 export default function App() {
@@ -19,14 +20,32 @@ export default function App() {
     catch { return []; }
   });
   const [order, setOrder] = useState(null);
+  const [soldCounts, setSoldCounts] = useState(readSavedInventory);
+  const [availabilityDemo, setAvailabilityDemo] = useState(false);
+  const currentPlants = applyStockChanges(plants, soldCounts).map(plant => {
+    // Demonstrate a stock change AFTER a customer has selected an item.
+    const affected = availabilityDemo && cart[0]?.id === plant.id;
+    return affected ? { ...plant, stock: Math.min(plant.stock, Math.max(0, cart[0].quantity - 1)) } : plant;
+  });
+  const resetInventory = () => {
+    setSoldCounts({});
+    setAvailabilityDemo(false);
+    setCartMessage('Original demo inventory restored.');
+  };
   const [cartMessage, setCartMessage] = useState('');
   useEffect(() => { localStorage.setItem('littleLeafCart', JSON.stringify(cart)); }, [cart]);
+  useEffect(() => { localStorage.setItem('littleLeafInventorySold-v1', JSON.stringify(soldCounts)); }, [soldCounts]);
   const updateItem = (id, quantity) => {
     if (quantity <= 0) { setCart(old => old.filter(item => item.id !== id)); setCartMessage(''); return; }
-    const plant = plants.find(item => item.id === id);
+    const plant = currentPlants.find(item => item.id === id);
     if (!plant) return;
     const valid = validateQuantity(quantity, plant.stock);
-    if (!valid.ok) { setCartMessage(valid.message); return; }
+    const previous = cart.find(item => item.id === id);
+    // Permit stepwise reduction of a stale saved basket even if it is still above stock.
+    if (!valid.ok && !(previous && quantity < previous.quantity)) {
+      setCartMessage(valid.message);
+      return;
+    }
     setCartMessage('');
     setCart(old => old.some(item => item.id === id) ? old.map(item => item.id === id ? { ...item, quantity } : item) : [...old, { id, quantity, pot: 'standard' }]);
   };
@@ -64,12 +83,17 @@ export default function App() {
   return <BrowserRouter>
     <Navbar count={cart.reduce((sum, item) => sum + item.quantity, 0)} />
     <Routes>
-      <Route path="/" element={<Home plants={plants} onAdd={addItem} />} />
-      <Route path="/match" element={<PlantMatch plants={plants} onAdd={addItem} />} />
-      <Route path="/shop" element={<Shop plants={plants} onAdd={addItem} loading={loading} error={error} retry={retry} failDemo={failDemo} setFailDemo={setFailDemo} emptyDemo={emptyDemo} setEmptyDemo={setEmptyDemo}/>} />
-      <Route path="/plants/:id" element={<PlantDetails plants={plants} onAdd={addItem} loading={loading} error={error} retry={retry}/>} />
-      <Route path="/cart" element={<Cart cart={cart} plants={plants} updateItem={updateItem} setPot={setPot} message={cartMessage}/>} />
-      <Route path="/checkout" element={<Checkout cart={cart} plants={plants} onComplete={result => { setOrder(result); setCart([]); }} />} />
+      <Route path="/" element={<Home plants={currentPlants} onAdd={addItem} />} />
+      <Route path="/match" element={<PlantMatch plants={currentPlants} onAdd={addItem} />} />
+      <Route path="/shop" element={<Shop plants={currentPlants} onAdd={addItem} loading={loading} error={error} retry={retry} failDemo={failDemo} setFailDemo={setFailDemo} emptyDemo={emptyDemo} setEmptyDemo={setEmptyDemo} availabilityDemo={availabilityDemo} setAvailabilityDemo={setAvailabilityDemo} resetInventory={resetInventory}/>} />
+      <Route path="/plants/:id" element={<PlantDetails plants={currentPlants} onAdd={addItem} loading={loading} error={error} retry={retry}/>} />
+      <Route path="/cart" element={<Cart cart={cart} plants={currentPlants} updateItem={updateItem} setPot={setPot} message={cartMessage}/>} />
+      <Route path="/checkout" element={<Checkout cart={cart} plants={currentPlants} onComplete={result => {
+        setSoldCounts(previous => recordPurchase(previous, cart, plants));
+        setOrder(result);
+        setCart([]);
+        setCartMessage('');
+      }} />} />
       <Route path="/confirmation" element={<Confirmation order={order} />} />
       <Route path="*" element={<main className="feedback"><h1>Oops, nothing grows here.</h1><p>This page doesn't exist.</p><Link className="primary-button" to="/">Go home ↗</Link></main>} />
     </Routes>
