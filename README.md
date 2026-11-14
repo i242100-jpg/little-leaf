@@ -3,7 +3,7 @@
 **Web Programming (CS4032) — Assignment 02 | Fall 2026**  
 **Student:** Iraj Aslam | **Roll no.:** 24I-2100 | **Section:** CY-5A   
 **Repository:** https://github.com/i242100-jpg/little-leaf  
-**Deployed website:** _Add after Vercel deployment_
+**Deployed website:** https://little-leaf-liart.vercel.app/
 
 ## About
 
