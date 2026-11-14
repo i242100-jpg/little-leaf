@@ -96,6 +96,3 @@ The production build is created in `dist/`. The last recorded local test run pas
 - `docs/IMAGE-CREDITS.md` — image attribution record .
 - Final PDF report — reference-site screenshots, implemented screens, and tests.
 
-## Deployment
-
-Deploy the repository with **Vercel**, using the Vite build command `npm run build` and output directory `dist`. Verify refresh and direct navigation on `/shop`, `/plants/:id`, `/cart`, and `/match`. Add the public deployment URL above and record the final Git commit hash in the assignment report.
