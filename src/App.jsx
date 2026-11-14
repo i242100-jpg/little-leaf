@@ -33,21 +33,44 @@ export default function App() {
     setCartMessage('Original demo inventory restored.');
   };
   const [cartMessage, setCartMessage] = useState('');
+  const [basketNotice, setBasketNotice] = useState(null);
+  const notifyBasket = (text, kind = 'success') => {
+    setBasketNotice({ text, kind, id: Date.now() });
+  };
+  useEffect(() => {
+    if (!basketNotice) return;
+    const timeout = setTimeout(() => setBasketNotice(null), 3200);
+    return () => clearTimeout(timeout);
+  }, [basketNotice]);
   useEffect(() => { localStorage.setItem('littleLeafCart', JSON.stringify(cart)); }, [cart]);
   useEffect(() => { localStorage.setItem('littleLeafInventorySold-v1', JSON.stringify(soldCounts)); }, [soldCounts]);
   const updateItem = (id, quantity) => {
-    if (quantity <= 0) { setCart(old => old.filter(item => item.id !== id)); setCartMessage(''); return; }
-    const plant = currentPlants.find(item => item.id === id);
-    if (!plant) return;
-    const valid = validateQuantity(quantity, plant.stock);
     const previous = cart.find(item => item.id === id);
+    const plant = currentPlants.find(item => item.id === id);
+    const plantName = plant?.name || 'Plant';
+    if (quantity <= 0) {
+      if (!previous) return false;
+      setCart(old => old.filter(item => item.id !== id));
+      setCartMessage('');
+      notifyBasket(`${plantName} removed from your basket.`);
+      return true;
+    }
+    if (!plant) return false;
+    const valid = validateQuantity(quantity, plant.stock);
     // Permit stepwise reduction of a stale saved basket even if it is still above stock.
     if (!valid.ok && !(previous && quantity < previous.quantity)) {
       setCartMessage(valid.message);
-      return;
+      notifyBasket(valid.message, 'error');
+      return false;
     }
     setCartMessage('');
     setCart(old => old.some(item => item.id === id) ? old.map(item => item.id === id ? { ...item, quantity } : item) : [...old, { id, quantity, pot: 'standard' }]);
+    const notice = !previous ? `${plantName} added to your basket!`
+      : quantity > previous.quantity ? `${plantName} added — ${quantity} in your basket.`
+      : quantity < previous.quantity ? `${plantName} quantity reduced to ${quantity}.`
+      : `${plantName} basket updated.`;
+    notifyBasket(notice);
+    return true;
   };
   const addItem = (id, count = 1) => {
     const existing = cart.find(item => item.id === id);
@@ -82,6 +105,11 @@ export default function App() {
 
   return <BrowserRouter>
     <Navbar count={cart.reduce((sum, item) => sum + item.quantity, 0)} />
+    {basketNotice && <div className={`basket-toast ${basketNotice.kind === 'error' ? 'basket-toast-error' : ''}`} role={basketNotice.kind === 'error' ? 'alert' : 'status'} aria-live={basketNotice.kind === 'error' ? 'assertive' : 'polite'} aria-atomic="true">
+      <span className="basket-toast-icon" aria-hidden="true">{basketNotice.kind === 'error' ? '!' : '✓'}</span>
+      <span>{basketNotice.text}</span>
+      <button type="button" className="basket-toast-close" aria-label="Dismiss notification" onClick={() => setBasketNotice(null)}>×</button>
+    </div>}
     <Routes>
       <Route path="/" element={<Home plants={currentPlants} onAdd={addItem} />} />
       <Route path="/match" element={<PlantMatch plants={currentPlants} onAdd={addItem} />} />

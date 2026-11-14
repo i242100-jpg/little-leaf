@@ -88,3 +88,54 @@
 .inventory-availability-note { color: #546d48; font-size: .9rem; margin: 12px 0 0; }
 .simulation-note { display: flex; align-items: center; gap: 8px; font-size: .85rem; line-height: 1.5; color: #62775f; background: #f3f5e9; padding: 10px 14px; border-radius: 14px; margin: 14px 0; max-width: 100%; }
 .simulation-note span { color: #d3968c; }
+
+/* Accessible, unobtrusive feedback after a basket action. */
+.basket-toast {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 14px 16px;
+  background: #0a3323;
+  color: #e7f4d5;
+  border: 1px solid #839958;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(10, 51, 35, .19);
+  font-size: .95rem;
+  line-height: 1.4;
+}
+.basket-toast-icon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e7f4d5;
+  color: #0a3323;
+  font-weight: 700;
+}
+.basket-toast-error {
+  background: #fff4f1;
+  border-color: #d3968c;
+  color: #702e2e;
+}
+.basket-toast-error .basket-toast-icon { background: #702e2e; color: white; }
+.basket-toast-close {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.5rem;
+  line-height: 1;
+  padding: 0 2px;
+  margin-left: auto;
+}
+.basket-toast-close:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+@media (max-width: 600px) {
+  .basket-toast { left: 16px; right: 16px; bottom: 16px; max-width: none; }
+}
